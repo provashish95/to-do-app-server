@@ -27,6 +27,20 @@ async function run() {
             res.send({ success: 'Upload successfully' })
         });
 
+        //get all data from database...
+        app.get('/tasks', async (req, res) => {
+            const allTasks = await tasksCollection.find({}).toArray();
+            res.send(allTasks);
+        });
+
+        //Delete items by id api 
+        app.delete('/task/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            result = await tasksCollection.deleteOne(query);
+            res.send({ success: 'Deleted successfully' })
+        });
+
 
 
 
