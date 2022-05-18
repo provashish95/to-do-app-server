@@ -6,8 +6,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config()
 const port = process.env.PORT || 5000;
 
-//to-do
-//JLQA8S4HibwczHaR
+
 //middleware 
 app.use(cors())
 app.use(express.json())
@@ -55,10 +54,6 @@ async function run() {
             result = await tasksCollection.deleteOne(query);
             res.send({ success: 'Deleted successfully' })
         });
-
-
-
-
     }
     finally {
 
