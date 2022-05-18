@@ -70,7 +70,6 @@ app.listen(port, () => {
     console.log(`Port is:  ${port}`)
 });
 
-
 //verify token ........ function
 function verifyToken(token) {
     let email;
