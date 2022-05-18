@@ -18,7 +18,6 @@ async function run() {
     try {
         await client.connect();
         const tasksCollection = client.db("toDoList").collection("tasks");
-        console.log('db is connected');
 
         //created token for access...
         app.post('/login', async (req, res) => {
