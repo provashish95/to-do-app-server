@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
+const jwt = require('jsonwebtoken');
 require('dotenv').config()
 const port = process.env.PORT || 5000;
 
@@ -20,11 +21,25 @@ async function run() {
         const tasksCollection = client.db("toDoList").collection("tasks");
         console.log('db is connected');
 
+        //created token for access...
+        app.post('/login', async (req, res) => {
+            const email = req.body;
+            const token = jwt.sign(email, process.env.ACCESS_TOKEN_SECRET);
+            res.send({ token })
+        })
+
         //api for upload data
         app.post('/tasks', async (req, res) => {
             const newTask = req.body;
-            const result = await tasksCollection.insertOne(newTask);
-            res.send({ success: 'Upload successfully' })
+            const tokenInfo = req.headers.authorization;
+            const [email, accessToken] = tokenInfo?.split(" ");
+            const decoded = verifyToken(accessToken);
+            if (email === decoded.email) {
+                const result = await tasksCollection.insertOne(newTask);
+                res.send({ success: 'Upload successfully' })
+            } else {
+                res.send({ success: 'Unauthorized Access' })
+            }
         });
 
         //get all data from database...
@@ -60,3 +75,18 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Port is:  ${port}`)
 });
+
+
+//verify token ........ function
+function verifyToken(token) {
+    let email;
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, function (err, decoded) {
+        if (err) {
+            email = 'Invalid email'
+        }
+        if (decoded) {
+            email = decoded
+        }
+    });
+    return email;
+}
