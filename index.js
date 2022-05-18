@@ -19,6 +19,17 @@ async function run() {
         await client.connect();
         const tasksCollection = client.db("toDoList").collection("tasks");
         console.log('db is connected');
+
+        //api for upload data
+        app.post('/tasks', async (req, res) => {
+            const newTask = req.body;
+            const result = await tasksCollection.insertOne(newTask);
+            res.send({ success: 'Upload successfully' })
+        });
+
+
+
+
     }
     finally {
 
